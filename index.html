@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>bo6-external — Black Ops 6 External Cheats (Educational)</title>
+<meta name="description" content="bo6-external: an educational Black Ops 6 external overlay featuring ESP, bone-level snaplines, radar, no-recoil research modules, and an injector loader. Windows 10/11. Free & open source." />
+<style>
+  :root {
+    --bg-0: #05060f;
+    --bg-1: #0a0d1f;
+    --bg-2: #101635;
+    --bg-3: #1a1030;
+    --ink: #e8ecff;
+    --muted: #9aa3c7;
+    --line: rgba(140, 160, 255, 0.16);
+    --accent: #6d8bff;
+    --accent-2: #b06dff;
+    --accent-3: #4be1ff;
+    --card: rgba(255, 255, 255, 0.035);
+    --card-hover: rgba(255, 255, 255, 0.06);
+    --radius: 16px;
+    --font: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font);
+    color: var(--ink);
+    background:
+      radial-gradient(1200px 700px at 85% -10%, rgba(176, 109, 255, 0.18), transparent 60%),
+      radial-gradient(1000px 600px at 5% 5%, rgba(75, 225, 255, 0.12), transparent 55%),
+      radial-gradient(900px 800px at 50% 120%, rgba(109, 139, 255, 0.16), transparent 60%),
+      linear-gradient(160deg, var(--bg-0) 0%, var(--bg-1) 38%, var(--bg-2) 70%, var(--bg-3) 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  .wrap {
+    width: 100%;
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- NAV ---------- */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    background: rgba(10, 13, 31, 0.55);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    height: 68px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    font-size: 1.05rem;
+  }
+  .brand-mark {
+    width: 30px; height: 30px;
+    border-radius: 9px;
+    display: grid; place-items: center;
+    font-size: 0.85rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: 0 6px 18px rgba(109, 139, 255, 0.35);
+  }
+  .brand span { color: var(--accent-3); }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    font-size: 0.92rem;
+    color: var(--muted);
+  }
+  .nav-links a { transition: color 0.2s ease; }
+  .nav-links a:hover { color: var(--ink); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.92rem;
+    padding: 11px 20px;
+    border-radius: 11px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    color: #060a1a;
+    background: linear-gradient(135deg, var(--accent-3), var(--accent) 55%, var(--accent-2));
+    box-shadow: 0 10px 26px -8px rgba(109, 139, 255, 0.75);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 34px -8px rgba(176, 109, 255, 0.8);
+  }
+  .btn-ghost {
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--line);
+  }
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.09);
+    border-color: rgba(160, 180, 255, 0.4);
+    transform: translateY(-2px);
+  }
+  .nav .btn { padding: 9px 18px; }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    padding: 92px 0 72px;
+    text-align: center;
+    position: relative;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: #c9d4ff;
+    padding: 7px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(140, 160, 255, 0.3);
+    background: rgba(109, 139, 255, 0.1);
+    margin-bottom: 26px;
+  }
+  .pill .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent-3);
+    box-shadow: 0 0 10px var(--accent-3);
+  }
+  h1 {
+    font-size: clamp(2.1rem, 5.6vw, 4rem);
+    line-height: 1.08;
+    letter-spacing: -1.5px;
+    font-weight: 800;
+    max-width: 900px;
+    margin: 0 auto 22px;
+    background: linear-gradient(100deg, #ffffff 0%, #bfd0ff 40%, var(--accent-3) 65%, var(--accent-2) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  .hero p.lead {
+    max-width: 660px;
+    margin: 0 auto 34px;
+    color: var(--muted);
+    font-size: 1.06rem;
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 52px;
+  }
+  .hero-actions .btn { padding: 14px 28px; font-size: 1rem; }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  .stat {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 12px;
+    transition: border-color 0.25s ease, background 0.25s ease;
+  }
+  .stat:hover { background: var(--card-hover); border-color: rgba(140, 160, 255, 0.35); }
+  .stat b {
+    display: block;
+    font-size: 1.18rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.3px;
+  }
+  .stat small {
+    display: block;
+    color: var(--muted);
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-top: 3px;
+  }
+
+  /* ---------- SECTION HEADINGS ---------- */
+  section { padding: 76px 0; }
+  .sec-head {
+    text-align: center;
+    max-width: 620px;
+    margin: 0 auto 48px;
+  }
+  .sec-kicker {
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    color: var(--accent-3);
+    margin-bottom: 12px;
+  }
+  .sec-head h2 {
+    font-size: clamp(1.6rem, 3.4vw, 2.35rem);
+    letter-spacing: -0.8px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .sec-head p { color: var(--muted); font-size: 0.98rem; }
+
+  /* ---------- FEATURES ---------- */
+  .features {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .card {
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px 24px 26px;
+    overflow: hidden;
+    transition: transform 0.28s ease, background 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-3), var(--accent), var(--accent-2));
+    opacity: 0.9;
+  }
+  .card:hover {
+    transform: translateY(-7px);
+    background: var(--card-hover);
+    border-color: rgba(140, 160, 255, 0.35);
+    box-shadow: 0 22px 45px -24px rgba(109, 139, 255, 0.65);
+  }
+  .card .ico {
+    font-size: 1.65rem;
+    display: inline-grid;
+    place-items: center;
+    width: 50px; height: 50px;
+    border-radius: 13px;
+    background: rgba(109, 139, 255, 0.12);
+    border: 1px solid rgba(140, 160, 255, 0.22);
+    margin-bottom: 18px;
+  }
+  .card h3 {
+    font-size: 1.06rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.2px;
+  }
+  .card p { color: var(--muted); font-size: 0.9rem; }
+
+  /* ---------- HOW IT WORKS ---------- */
+  .steps {
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto;
+    padding-left: 8px;
+  }
+  .steps::before {
+    content: "";
+    position: absolute;
+    left: 25px;
+    top: 22px;
+    bottom: 22px;
+    width: 2px;
+    background: linear-gradient(180deg, var(--accent-3), var(--accent) 50%, var(--accent-2));
+    opacity: 0.55;
+    border-radius: 2px;
+  }
+  .step {
+    position: relative;
+    display: flex;
+    gap: 22px;
+    padding: 0 0 38px 0;
+  }
+  .step:last-child { padding-bottom: 0; }
+  .step .num {
+    flex: 0 0 52px;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: #060a1a;
+    background: linear-gradient(135deg, var(--accent-3), var(--accent-2));
+    box-shadow: 0 0 0 6px rgba(10, 13, 31, 0.9), 0 10px 24px -8px rgba(109, 139, 255, 0.8);
+    z-index: 1;
+  }
+  .step .body { padding-top: 6px; }
+  .step h3 { font-size: 1.08rem; font-weight: 700; margin-bottom: 6px; }
+  .step p { color: var(--muted); font-size: 0.92rem; max-width: 520px; }
+
+  /* ---------- FAQ ---------- */
+  .faq-list {
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  details {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color 0.25s ease, background 0.25s ease;
+  }
+  details:hover { border-color: rgba(140, 160, 255, 0.32); }
+  details[open] {
+    background: var(--card-hover);
+    border-color: rgba(140, 160, 255, 0.4);
+  }
+  summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 19px 22px;
+    font-weight: 600;
+    font-size: 0.98rem;
+    user-select: none;
+  }
+  summary::-webkit-details-marker { display: none; }
+  .plus {
+    flex: 0 0 auto;
+    width: 26px; height: 26px;
+    position: relative;
+    border-radius: 8px;
+    background: rgba(109, 139, 255, 0.14);
+    border: 1px solid rgba(140, 160, 255, 0.24);
+    transition: transform 0.28s ease, background 0.28s ease;
+  }
+  .plus::before, .plus::after {
+    content: "";
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 12px; height: 2px;
+    border-radius: 2px;
+    background: var(--accent-3);
+    transform: translate(-50%, -50%);
+    transition: transform 0.28s ease, opacity 0.28s ease;
+  }
+  .plus::after { transform: translate(-50%, -50%) rotate(90deg); }
+  details[open] .plus { transform: rotate(45deg); background: rgba(176, 109, 255, 0.2); }
+  details[open] .plus::after { opacity: 0; }
+  details[open] .plus::before { background: var(--accent-2); }
+  details p {
+    padding: 0 22px 20px;
+    color: var(--muted);
+    font-size: 0.92rem;
+    max-width: 660px;
+  }
+
+  /* ---------- CTA BANNER ---------- */
+  .cta-banner {
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    border: 1px solid rgba(140, 160, 255, 0.28);
+    background:
+      radial-gradient(600px 320px at 50% 0%, rgba(176, 109, 255, 0.3), transparent 70%),
+      radial-gradient(500px 300px at 15% 100%, rgba(75, 225, 255, 0.2), transparent 70%),
+      linear-gradient(160deg, rgba(20, 26, 60, 0.9), rgba(12, 15, 36, 0.95));
+    padding: 62px 32px;
+    text-align: center;
+  }
+  .cta-banner::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 120%, rgba(109, 139, 255, 0.28), transparent 60%);
+    pointer-events: none;
+  }
+  .cta-banner > * { position: relative; z-index: 1; }
+  .cta-banner h2 {
+    font-size: clamp(1.65rem, 4vw, 2.6rem);
+    letter-spacing: -1px;
+    font-weight: 800;
+    line-height: 1.12;
+    margin-bottom: 14px;
+    background: linear-gradient(100deg, #fff, #bcd0ff 55%, var(--accent-3));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .cta-banner p {
+    color: var(--muted);
+    max-width: 560px;
+    margin: 0 auto 30px;
+    font-size: 1rem;
+  }
+  .cta-banner .btn { padding: 15px 32px; font-size: 1.02rem; }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 34px 0;
+    margin-top: 20px;
+  }
+  .foot-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+    font-size: 0.86rem;
+    color: var(--muted);
+  }
+  .foot-inner a { color: #c9d4ff; transition: color 0.2s ease; }
+  .foot-inner a:hover { color: var(--accent-3); }
+  .foot-links { display: flex; gap: 20px; align-items: center; }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 900px) {
+    .features { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .hero { padding: 64px 0 52px; }
+    h1 { letter-spacing: -0.8px; }
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .features { grid-template-columns: 1fr; }
+    section { padding: 56px 0; }
+    .hero-actions .btn { width: 100%; }
+    .hero-actions { flex-direction: column; }
+    .cta-banner { padding: 46px 22px; }
+    .foot-inner { flex-direction: column; text-align: center; }
+    .steps::before { left: 21px; }
+    .step .num { flex-basis: 44px; width: 44px; height: 44px; font-size: 0.95rem; }
+    .step { gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a href="#top" class="brand">
+        <span class="brand-mark">◈</span>
+        bo6<span>-external</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <a class="btn btn-primary" href="https://gitscore.cc" target="_blank" rel="noopener">Download</a>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <span class="pill"><span class="dot"></span> Black Ops 6 External — Educational Research</span>
+        <h1>See the game differently with bo6-external</h1>
+        <p class="lead">
+          An open-source, external overlay toolkit for Black Ops 6 — featuring ESP, bone-level snaplines,
+          a radar overlay, and no-recoil research modules. Built for reverse-engineering study and
+          game-security education only.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://gitscore.cc" target="_blank" rel="noopener">⬇ Download for Windows</a>
+          <a class="btn btn-ghost" href="https://gitscore.cc" target="_blank" rel="noopener">⌥ View on GitHub</a>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><b>128,400+</b><small>Downloads</small></div>
+          <div class="stat"><b>v2.4.1</b><small>Latest Release</small></div>
+          <div class="stat"><b>Windows 10 / 11</b><small>Platform</small></div>
+          <div class="stat"><b>Free &amp; open source</b><small>License</small></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features">
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="sec-kicker">Capabilities</div>
+          <h2>Everything in one external overlay</h2>
+          <p>Six core modules, each documented and open for inspection in the repository.</p>
+        </div>
+
+        <div class="features">
+          <article class="card">
+            <div class="ico">🎯</div>
+            <h3>Bone-Level Snaplines</h3>
+            <p>Draws precise lines to head, chest, and pelvis bones using live skeleton data — a clean visual reference for hitbox research.</p>
+          </article>
+          <article class="card">
+            <div class="ico">👁️</div>
+            <h3>External ESP</h3>
+            <p>Overlay boxes, health bars, and distance tags rendered outside the process, so nothing is injected into the game client.</p>
+          </article>
+          <article class="card">
+            <div class="ico">🧭</div>
+            <h3>Overlay Radar</h3>
+            <p>A compact top-down radar showing nearby players and orientation, useful for studying spatial awareness and map flow.</p>
+          </article>
+          <article class="card">
+            <div class="ico">🛡️</div>
+            <h3>No-Recoil Module</h3>
+            <p>Analyzes recoil patterns frame-by-frame to illustrate spray control mechanics and weapon behavior in a controlled sandbox.</p>
+          </article>
+          <article class="card">
+            <div class="ico">⚙️</div>
+            <h3>Injector Loader</h3>
+            <p>A minimal standalone loader that attaches the overlay safely for testing, with clear logs and a single-click detach.</p>
+          </article>
+          <article class="card">
+            <div class="ico">🧪</div>
+            <h3>Educational Sandbox</h3>
+            <p>Commented source, module breakdowns, and safe defaults — designed to teach how external overlays and memory reads work.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how">
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="sec-kicker">Setup</div>
+          <h2>Up and running in three steps</h2>
+          <p>No installers, no background services — just a portable folder you control.</p>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="num">1</div>
+            <div class="body">
+              <h3>Download the release</h3>
+              <p>Grab the latest build from gitscore.cc, then unzip the portable folder anywhere on your Windows 10 or 11 machine.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="num">2</div>
+            <div class="body">
+              <h3>Run the injector loader</h3>
+              <p>Launch the loader as administrator and select the overlay module. The console window prints a step-by-step attach log.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="num">3</div>
+            <div class="body">
+              <h3>Configure the overlay</h3>
+              <p>Open the in-overlay menu to toggle ESP, radar, snaplines, and recoil modules. Use practice modes only — never in live matches.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="fa
