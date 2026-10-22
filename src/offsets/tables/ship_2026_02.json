@@ -1,0 +1,8 @@
+{
+  "build": "ship_2026_02",
+  "game_version": "1.0.4",
+  "entity_list": "0x1A3F80C0",
+  "local_player": "0x1A3F7E10",
+  "view_matrix": "0x1A3F9010",
+  "bone_matrix": "0x1A3FA200"
+}
