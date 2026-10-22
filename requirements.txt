@@ -1,0 +1,9 @@
+# bo6-external — external cheat research toolkit (educational)
+pywin32>=306
+pymem>=1.13.1
+pygame>=2.5.2
+requests>=2.31.0
+keyboard>=0.13.5
+numpy>=1.26.4
+pytest>=8.0.0
+pyyaml>=6.0.1
