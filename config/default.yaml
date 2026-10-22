@@ -1,0 +1,31 @@
+# bo6-external default configuration (educational)
+host:
+  fps: 60
+  log_level: INFO
+
+process:
+  name: cod.exe
+  build: ship_2026_02
+
+esp:
+  enabled: false
+  max_distance: 250.0
+  draw_health: true
+  draw_names: false
+
+aimbot:
+  enabled: false
+  fov: 45.0
+  smoothing: 8.0
+  key: shift
+  bone: head
+
+radar:
+  enabled: false
+  radius: 60.0
+
+overlay:
+  width: 1920
+  height: 1080
+  transparent: true
+  click_through: true
